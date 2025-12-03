@@ -3,15 +3,12 @@
 //
 
 #include <Arduino.h>
-#include <memory>
 #include <bot.h>
 
-std::unique_ptr<Bot> bot;
-
 void setup() {
-  bot->init();
+  Bot::init();
 }
 
 void loop() {
-  bot->update();
+  Bot::update();
 }

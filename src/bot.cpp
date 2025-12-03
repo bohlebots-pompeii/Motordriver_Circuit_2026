@@ -12,7 +12,12 @@
 
 elapsedMillis lastKick;
 
-void kick(const int time) {
+int Bot::_vx = 0;
+int Bot::_vy = 0;
+int Bot::_rotation = 0;
+int Bot::_dribblerSpeed = 0;
+
+void Bot::kick(const int time) {
   if (lastKick <= 500) return; // safety check for last kick
 
   digitalWrite(kickPin, HIGH);
@@ -22,7 +27,7 @@ void kick(const int time) {
   lastKick = 0;
 }
 
-void motor(const int num, const int motorSpeed) {
+void Bot::motor(const int num, const int motorSpeed) {
   if (num < 0 || num > 3) return;
   if (motorSpeed < 0) {
     digitalWrite(dir[num], LOW);
@@ -33,11 +38,11 @@ void motor(const int num, const int motorSpeed) {
   ledcWrite(pwm[num], map(abs(motorSpeed), 0, 100, static_cast<long>(255*0.1), static_cast<long>(255*0.9)));
 }
 
-void omnidrive(int vx, int vy, const int rotation) {
+void Bot::omnidrive(int vx, int vy, const int rotation) {
   std::array<int, 4> speeds{};
 
-  vx = map(0, 255, 100, -100, vx); // remap
-  vy = map(0, 255, 100, -100, vy); // remap
+  vx = map(vx, 0, 255, -100, 100);
+  vy = map(vy, 0, 255, -100, 100);
 
   //vy = -vy;
   //vx = -vx;
@@ -52,7 +57,7 @@ void omnidrive(int vx, int vy, const int rotation) {
   }
 }
 
-void onReceive(const int numBytes) {
+void Bot::onReceive(const int numBytes) {
   std::vector<uint8_t> data;
 
   while (Wire.available()) {
@@ -89,22 +94,17 @@ void onReceive(const int numBytes) {
     kick(kickDuration);
   }
 
-  int vx = 0;
-  int vy = 0;
   // byte 2 vx -> drive
-  vx = static_cast<int>(data[1]);
+  _vx = static_cast<int>(data[1]);
   // byte 3 vy -> drive
-  vy = static_cast<int>(data[2]);
+  _vy = static_cast<int>(data[2]);
   // byte 4 rotation -> drive
-  const int rotation = data[3];
+  _rotation = data[3];
   // byte 5 dribbler -> dribbler
-  const int dribbler = static_cast<int>(data[4]);
-
-  // exec
-  omnidrive(vx, vy, rotation);
+  _dribblerSpeed = static_cast<int>(data[4]);
 }
 
-void init() {
+void Bot::init() {
   pinMode(ena, OUTPUT);
   pinMode(kickPin, OUTPUT);
 
@@ -120,6 +120,6 @@ void init() {
   }
 }
 
-void update() {
-
+void Bot::update() {
+  omnidrive(_vx, _vy, _rotation);
 }

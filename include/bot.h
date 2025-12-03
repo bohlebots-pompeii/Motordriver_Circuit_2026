@@ -7,18 +7,24 @@
 
 class Bot {
 public:
-  Bot();
-  void init();
+  static void init();
 
-  void update();
+  static void update();
 
 private:
-  void kick();
+  static void kick(int time);
 
-  void motor(int num, int motorSpeed);
+  static void motor(int num, int motorSpeed);
 
-  void omnidrive();
+  static void omnidrive(int vx, int vy, int rotation);
 
-  void onReceive(const int numBytes);
+  static void onReceive(int numBytes);
+
+  static int _vx;
+  static int _vy;
+
+  static int _rotation;
+
+  static int _dribblerSpeed;
 };
 #endif //MOTORDRIVERMB_BOT_H
