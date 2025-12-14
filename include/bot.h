@@ -4,6 +4,7 @@
 
 #ifndef MOTORDRIVERMB_BOT_H
 #define MOTORDRIVERMB_BOT_H
+#include <Arduino.h>
 
 class Bot {
 public:
@@ -16,12 +17,12 @@ private:
 
   static void motor(int num, int motorSpeed);
 
-  static void omnidrive(int vx, int vy, int rotation);
+  static void omnidrive(int8_t vx, int8_t vy, int rotation);
 
   static void onReceive(int numBytes);
 
-  static int _vx;
-  static int _vy;
+  static int8_t _vx;
+  static int8_t _vy;
 
   static int _rotation;
 
