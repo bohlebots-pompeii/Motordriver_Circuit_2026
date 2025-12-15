@@ -71,28 +71,26 @@ void Bot::omnidrive(const int vx, const int vy, const int rotation) {
 // 5. byte dribbler
 //
 
-void Bot::onReceive(const int numBytes) {
-  std::vector<uint8_t> data;
+void Bot::onReceive(int numBytes) {
+  if (numBytes < sizeof(MotorCmd)) return;
 
-  while (Wire.available()) {
-    data.push_back(static_cast<uint8_t>(Wire.read()));
+  MotorCmd cmd{};
+
+  uint8_t* p = reinterpret_cast<uint8_t*>(&cmd);
+  for (int i = 0; i < sizeof(MotorCmd); i++) {
+    if (!Wire.available()) return;
+    p[i] = Wire.read();
   }
 
-  if (data.size() < 5) return; // safety
+  digitalWrite(ena, (cmd.flags & 0x01) ? HIGH : LOW);
+  if (cmd.flags & 0x02) kick(kickDuration);
 
-  const std::bitset<8> bits(data[0]);
-
-  digitalWrite(ena, bits[0] ? HIGH : LOW);
-  if (bits[1]) kick(kickDuration);
-
-  const uint8_t raw_vx = data[1];
-  const uint8_t raw_vy = data[2];
-  _vx = map(static_cast<int>(raw_vx), 0, 255, -100, 100);
-  _vy = map(static_cast<int>(raw_vy), 0, 255, -100, 100);
-
-  _rotation = static_cast<int>(static_cast<int8_t>(data[3]));
-  _dribblerSpeed = static_cast<int>(static_cast<int8_t>(data[4]));
+  _vx = cmd.vx;
+  _vy = cmd.vy;
+  _rotation = cmd.rot;
+  _dribblerSpeed = cmd.drib;
 }
+
 
 void Bot::init() {
   pinMode(ena, OUTPUT);
