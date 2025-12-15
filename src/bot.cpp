@@ -57,7 +57,6 @@ void Bot::omnidrive(const int vx, const int vy, const int rotation) {
   }
 }
 
-
 //
 // Bytes that will be send by master
 // -------------------------------
@@ -71,20 +70,22 @@ void Bot::omnidrive(const int vx, const int vy, const int rotation) {
 // 5. byte dribbler
 //
 
-void Bot::onReceive(int numBytes) {
+void Bot::onReceive(const int numBytes) {
   if (numBytes < sizeof(MotorCmd)) return;
 
   MotorCmd cmd{};
 
-  uint8_t* p = reinterpret_cast<uint8_t*>(&cmd);
+  // read bytes into struct from wire
+  auto* p = reinterpret_cast<uint8_t*>(&cmd);
   for (int i = 0; i < sizeof(MotorCmd); i++) {
     if (!Wire.available()) return;
     p[i] = Wire.read();
   }
 
-  digitalWrite(ena, (cmd.flags & 0x01) ? HIGH : LOW);
-  if (cmd.flags & 0x02) kick(kickDuration);
+  digitalWrite(ena, (cmd.flags & 0x01) ? HIGH : LOW); // ena
+  if (cmd.flags & 0x02) kick(kickDuration); // kick
 
+  // different velos
   _vx = cmd.vx;
   _vy = cmd.vy;
   _rotation = cmd.rot;
