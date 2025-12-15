@@ -6,6 +6,7 @@
 #include <bot.h>
 
 void setup() {
+  delay(300);
   Bot::init();
 }
 

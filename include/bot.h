@@ -17,7 +17,7 @@ private:
 
   static void motor(int num, int motorSpeed);
 
-  static void omnidrive(int8_t vx, int8_t vy, int rotation);
+  static void omnidrive(int vx, int vy, int rotation);
 
   static void onReceive(int numBytes);
 

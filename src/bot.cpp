@@ -43,21 +43,20 @@ void Bot::motor(const int num, const int motorSpeed) {
 }
 
 
-void Bot::omnidrive(const int8_t vx,const int8_t vy, const int rotation) {
-  std::array<int8_t, 4> speeds{};
-
-  //vy = -vy;
-  //vx = -vx;
+void Bot::omnidrive(const int vx, const int vy, const int rotation) {
+  std::array<int16_t, 4> speeds{};
 
   speeds[0] = -vy - vx + rotation;
-  speeds[1] = vy - vx + rotation;
-  speeds[2] = vy + vx + rotation;
+  speeds[1] =  vy - vx + rotation;
+  speeds[2] =  vy + vx + rotation;
   speeds[3] = -vy + vx + rotation;
 
   for (int i = 0; i < 4; i++) {
+    speeds[i] = constrain(speeds[i], -100, 100);
     motor(i, speeds[i]);
   }
 }
+
 
 //
 // Bytes that will be send by master
