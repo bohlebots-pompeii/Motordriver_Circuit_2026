@@ -6,9 +6,9 @@
 
 #include <array>
 
-constexpr std::array pwm = {25, 33, 5, 14};
+constexpr std::array pwm = {25, 33, 5, 14, 2};
 
-constexpr std::array dir = {26, 32, 19, 27};
+constexpr std::array dir = {26, 32, 19, 27, 4};
 
 constexpr int kickPin = 23;
 

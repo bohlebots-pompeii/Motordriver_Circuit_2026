@@ -28,7 +28,7 @@ void Bot::kick(const int time) {
 }
 
 void Bot::motor(const int num, const int motorSpeed) {
-  if (num < 0 || num > 3) return;
+  if (num < 0 || num > 4) return;
 
   const int speed = std::clamp(motorSpeed, -100, 100); // assign result
 
@@ -100,7 +100,7 @@ void Bot::init() {
   Wire.begin(0x69);
   Wire.onReceive(onReceive);
 
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i <= 4; i++) {
     pinMode(pwm[i], OUTPUT);
     pinMode(dir[i], OUTPUT);
     digitalWrite(dir[i], HIGH);
@@ -111,4 +111,5 @@ void Bot::init() {
 
 void Bot::update() {
   omnidrive(_vx, _vy, _rotation);
+  motor(4, _dribblerSpeed);
 }
