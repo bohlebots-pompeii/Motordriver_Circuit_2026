@@ -6,7 +6,7 @@
 #include <bot.h>
 
 void setup() {
-  delay(300);
+  delay(300); // wait for the other i2c to register
   Bot::init();
 }
 
